@@ -1,6 +1,6 @@
 {
   "name": "@merkleworks/x402-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for the x402 protocol — allows AI agents to discover and call x402-gated APIs automatically",
   "type": "module",
   "main": "./dist/server.js",

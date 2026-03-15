@@ -4,6 +4,23 @@ MCP server for the [x402 protocol](https://github.com/ruidasilva/merkleworks-x40
 
 **Published on GitHub:** [Merkleworks/x402-mcp](https://github.com/merkleworks/x402-mcp) · [ruidasilva/x402-mcp](https://github.com/ruidasilva/x402-mcp)
 
+## Install
+
+**One-line (run without installing):**
+
+```bash
+npx @merkleworks/x402-mcp
+```
+
+Or install globally from npm (when published):
+
+```bash
+npm install -g @merkleworks/x402-mcp
+x402-mcp
+```
+
+From source, see [Quick Start](#quick-start) below.
+
 ## Tools
 
 | Tool | Description |
@@ -145,6 +162,12 @@ The x402 protocol uses HTTP 402 to gate API access behind BSV micropayments:
 
 This MCP server automates the entire flow so AI agents can pay for API calls seamlessly.
 
+## Examples
+
+See the [examples/](examples/) folder for runnable scripts:
+
+- **[discover-and-pay](examples/discover-and-pay.ts)** — discover payable endpoints on a host, then call the first one with automatic payment. Run from repo root: `npx tsx examples/discover-and-pay.ts https://your-x402-api.example.com`
+
 ## Configuration
 
 The `pay_x402_endpoint` tool accepts optional overrides:
@@ -153,6 +176,17 @@ The `pay_x402_endpoint` tool accepts optional overrides:
 - `broadcast_url` — defaults to WhatsOnChain mainnet API
 
 For the `/.well-known/x402` manifest format, see the [protocol spec](https://github.com/ruidasilva/merkleworks-x402-spec).
+
+## Publishing to npm
+
+From the repo root:
+
+```bash
+npm run build
+npm publish --access public
+```
+
+Scoped packages (`@merkleworks/...`) require `--access public` unless you use a paid npm org. After publishing, users can install with `npm install -g @merkleworks/x402-mcp` or run with `npx @merkleworks/x402-mcp`.
 
 ## License
 

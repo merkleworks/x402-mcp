@@ -1,16 +1,18 @@
 {
-  "name": "@merkleworks/x402-mcp",
+  "name": "x402-mcp",
   "version": "0.1.1",
-  "description": "MCP server for the x402 protocol — allows AI agents to discover and call x402-gated APIs automatically",
+  "description": "MCP server enabling AI agents to call payment-gated HTTP APIs using the x402 protocol",
   "type": "module",
   "main": "./dist/server.js",
   "bin": {
-    "x402-mcp": "dist/server.js"
+    "x402-mcp": "./dist/server.js"
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE",
+    "mcp.json",
+    ".well-known",
     "examples"
   ],
   "scripts": {
@@ -21,12 +23,12 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "x402",
     "mcp",
-    "bsv",
-    "payment",
-    "402",
-    "ai-agent"
+    "model-context-protocol",
+    "ai-tools",
+    "agent-tools",
+    "micropayments",
+    "x402"
   ],
   "license": "Apache-2.0",
   "repository": {

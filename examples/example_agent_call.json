@@ -1,0 +1,7 @@
+{
+  "tool": "x402_http_request",
+  "input": {
+    "url": "https://demo.x402.merkleworks.io/v1/expensive",
+    "method": "GET"
+  }
+}

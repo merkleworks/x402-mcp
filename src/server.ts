@@ -131,6 +131,97 @@ server.tool(
   }
 );
 
+// Shared schema and handler for HTTP request → 402 → pay → retry → response.
+const httpRequestSchema = {
+  url: z.string().url().describe("Full URL of the API endpoint"),
+  method: z
+    .enum(["GET", "POST", "PUT", "PATCH", "DELETE"])
+    .default("GET")
+    .describe("HTTP method"),
+  headers: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe("Optional HTTP headers as key-value pairs"),
+  body: z
+    .union([z.string(), z.record(z.string(), z.unknown())])
+    .optional()
+    .describe("Optional request body (string or JSON-serializable object)"),
+};
+
+async function handleHttpRequestWithPayment(args: {
+  url: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  headers?: Record<string, string>;
+  body?: string | Record<string, unknown>;
+}) {
+  const bodyStr =
+    args.body === undefined
+      ? undefined
+      : typeof args.body === "string"
+        ? args.body
+        : JSON.stringify(args.body);
+  const result = await payX402Endpoint({
+    url: args.url,
+    method: args.method,
+    body: bodyStr,
+    headers: asStringRecord(args.headers),
+  });
+
+  const lines: string[] = [];
+  lines.push(`HTTP ${result.status}`);
+  if (result.txid) lines.push(`Payment txid: ${result.txid}`);
+  lines.push("");
+  lines.push("Response body:");
+  lines.push(result.body);
+
+  return {
+    content: [{ type: "text", text: lines.join("\n") }],
+    structuredContent: {
+      status: result.status,
+      txid: result.txid,
+      body: result.body,
+    },
+  };
+}
+
+// ── x402_http_request ──────────────────────────────────────────────────────────
+// Canonical tool for agent discovery: send request → if 402, run x402 flow → return response.
+
+server.tool(
+  "x402_http_request",
+  "Execute HTTP requests to APIs requiring payment via the x402 protocol. Sends the request; if the server returns 402 Payment Required, parses the x402 challenge, constructs the payment transaction, retries with the payment proof, and returns the final response.",
+  httpRequestSchema,
+  async ({ url, method, headers, body }) => {
+    try {
+      return await handleHttpRequestWithPayment({ url, method, headers, body });
+    } catch (err) {
+      return {
+        content: [{ type: "text", text: `Request failed: ${err instanceof Error ? err.message : String(err)}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// ── paid_http_request ──────────────────────────────────────────────────────────
+// Alias for backward compatibility; same behavior as x402_http_request.
+
+server.tool(
+  "paid_http_request",
+  "Execute an HTTP request to a URL. If the server responds with 402 Payment Required, parses the x402 challenge, constructs the payment transaction, retries with the payment proof, and returns the final API response. Use this to call payment-gated APIs.",
+  httpRequestSchema,
+  async ({ url, method, headers, body }) => {
+    try {
+      return await handleHttpRequestWithPayment({ url, method, headers, body });
+    } catch (err) {
+      return {
+        content: [{ type: "text", text: `Request failed: ${err instanceof Error ? err.message : String(err)}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
 // ── parse_x402_challenge ───────────────────────────────────────────────────────
 
 server.tool(

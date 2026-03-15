@@ -1,0 +1,13 @@
+{
+  "name": "x402-mcp",
+  "description": "MCP server enabling AI agents to call payment-gated HTTP APIs using the x402 protocol.",
+  "repository": "https://github.com/merkleworks/x402-mcp",
+  "runtime": "node",
+  "install": "npx x402-mcp",
+  "tools": [
+    {
+      "name": "x402_http_request",
+      "description": "Execute HTTP requests to APIs requiring payment via the x402 protocol."
+    }
+  ]
+}

@@ -5,13 +5,20 @@
   "type": "module",
   "main": "./dist/server.js",
   "bin": {
-    "x402-mcp": "./dist/server.js"
+    "x402-mcp": "dist/server.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "examples"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx src/server.ts",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "x402",
@@ -24,7 +31,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/merkleworks/x402-mcp.git"
+    "url": "git+https://github.com/merkleworks/x402-mcp.git"
   },
   "bugs": {
     "url": "https://github.com/merkleworks/x402-mcp/issues"
